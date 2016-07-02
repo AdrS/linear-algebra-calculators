@@ -184,38 +184,32 @@ number.toComplex = function(a) {
 
 number.addReal = function(a,b) {
 	//Decimal + Rational -> Decimal
-	if(a.isDecimal() || b.isDecimal()) {
+	if(a.isDecimal() || b.isDecimal())
 		return number.Real(a.toDecimal() + b.toDecimal());
 	//Rational + Rational -> Rational
-	} else {
-		const n = a.numerator()*b.denominator() + b.numerator()*a.denominator();
-		const d = a.denominator() * b.denominator();
-		return number.Rational(n,d);
-	}
+	const n = a.numerator()*b.denominator() + b.numerator()*a.denominator();
+	const d = a.denominator() * b.denominator();
+	return number.Rational(n,d);
 }
 
 number.subReal = function(a,b) {
 	//Decimal - Rational -> Decimal
-	if(a.isDecimal() || b.isDecimal()) {
+	if(a.isDecimal() || b.isDecimal())
 		return number.Real(a.toDecimal() - b.toDecimal());
 	//Rational - Rational -> Rational
-	} else {
-		const n = a.numerator()*b.denominator() - b.numerator()*a.denominator();
-		const d = a.denominator() * b.denominator();
-		return number.Rational(n,d);
-	}
+	const n = a.numerator()*b.denominator() - b.numerator()*a.denominator();
+	const d = a.denominator() * b.denominator();
+	return number.Rational(n,d);
 }
 
 number.multReal = function(a,b) {
 	//Decimal - Rational -> Decimal
-	if(a.isDecimal() || b.isDecimal()) {
+	if(a.isDecimal() || b.isDecimal())
 		return number.Real(a.toDecimal() * b.toDecimal());
 	//Rational - Rational -> Rational
-	} else {
-		const n = a.numerator()*b.numerator();
-		const d = a.denominator() * b.denominator();
-		return number.Rational(n,d);
-	}
+	const n = a.numerator()*b.numerator();
+	const d = a.denominator() * b.denominator();
+	return number.Rational(n,d);
 }
 
 number.divReal = function(a,b) {
@@ -223,7 +217,29 @@ number.divReal = function(a,b) {
 	return number.multReal(a,b.inv());
 }
 
-//TODO: <, <=, ==, >=, > for Reals
+number.lt = function(a,b) {
+	if(a.isDecimal() || b.isDecimal()) return a.toDecimal() < b.toDecimal();
+	return a.numerator()*b.denominator() < b.numerator()*a.denominator();
+}
+
+number.leq = function(a,b) {
+	if(a.isDecimal() || b.isDecimal()) return a.toDecimal() <= b.toDecimal();
+	return a.numerator()*b.denominator() <= b.numerator()*a.denominator();
+}
+
+number.eq = function(a,b, epsilon) {
+	if(epsilon) return Math.abs(a.toDecimal() - b.toDecimal()) < epsilon;
+	if(a.isDecimal() || b.isDecimal()) return a.toDecimal() === b.toDecimal();
+	return a.numerator()*b.denominator() === b.numerator()*a.denominator();
+}
+
+number.geq = function(a,b) {
+	return !number.lt(a,b);
+}
+
+number.gt = function(a,b) {
+	return !number.leq(a,b);
+}
 
 //convert to complex
 //apply operation
@@ -285,4 +301,3 @@ number.exp = function(a,n) {
 		// then use Math.pow(n/d)
 	//also look at de Moivre's identity for complex #s
 }
-//TODO: add <,<=,=,>=,>
