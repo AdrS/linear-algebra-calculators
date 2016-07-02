@@ -226,7 +226,7 @@ number.add = function(a,b) {
 	return number.Complex(r,i);
 }
 
-number.subtract = function(a,b) {
+number.sub = function(a,b) {
 	//a,b -> a - b
 	a = number.toComplex(a);
 	b = number.toComplex(b);
@@ -236,19 +236,42 @@ number.subtract = function(a,b) {
 	return number.Complex(r,i);
 }
 
-number.multiply = function(a,b) {
-	a = number.toComplex(a);
-	b = number.toComplex(b);
+number.mult = function(a,b) {
+	const N = number;
+	a = N.toComplex(a);
+	b = N.toComplex(b);
+	const A = a.Re();
+	const B = a.Im();
+	const C = b.Re();
+	const D = b.Im();
+	const r = N.subReal(N.multReal(A,C), N.multReal(B,D));
+	const i = N.addReal(N.multReal(A,D), N.multReal(B,C));
+	if(i.isZero()) return r;
+	return N.Complex(r,i);
 }
 
-number.divide = function(a,b) {
+//TODO: test this more
+number.div = function(a,b) {
 	//a,b -> a/b or NaN if b = 0
-	a = number.toComplex(a);
-	b = number.toComplex(b);
+	const N = number;
+	a = N.toComplex(a);
+	b = N.toComplex(b);
+	if(b.isZero()) return NaN;
+	const A = a.Re();
+	const B = a.Im();
+	const C = b.Re();
+	const D = b.Im();
+	const t = N.addReal(N.multReal(C,C),N.multReal(D,D));
+	const r = N.divReal(N.addReal(N.multReal(A,C),N.multReal(B,D)),t);
+	const i = N.divReal(N.subReal(N.multReal(B,C),N.multReal(A,D)),t);
+	if(i.isZero()) return r;
+	return N.Complex(r,i);
 }
 
 number.exp = function(a,n) {
-	//use montgomery exponentiation
-	//also look at de Moivre's identity
+	//if decimal -> use Math.pow
+	//if rational -> Math.pow(n)/Math.pow(b) (if Math.pow(n) non int
+		// then use Math.pow(n/d)
+	//also look at de Moivre's identity for complex #s
 }
 //TODO: add <,<=,=,>=,>
