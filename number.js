@@ -64,9 +64,10 @@ number.Rational = function(n,d) {
 		isDecimal: function() { return false; },
 		toDecimal: function() { return n/d; },
 		toString: function() {
-			//TODO: handle case of 0/78
 			if(d === 1) {
 				return n.toString();
+			} else if(n === 0) {
+				return '0';
 			} else {
 				return n.toString() + '/' + d.toString();
 			}
@@ -107,12 +108,18 @@ number.Complex = function(r, i) {
 		toString: function() {
 			if(i.isZero()) {
 				return r.toString();
-			} else if(r.isZero()) {
-				return i.toString() + 'i';
-			} else {
-				return r.toString() + ' + ' + i.toString() + 'i';
 			}
-			//TODO: handle 1 + -8i vs 1 - 8i
+			if(r.isZero()) {
+				if(i.abs().toDecimal() == 1) {
+					if(i.toDecimal() < 0) return '-i';
+					return 'i';
+				}
+				return i.toString() + 'i';
+			}
+			const sep = i.toDecimal() < 0 ? ' - ' : ' + ';
+			const ai = i.abs();
+			const ip = ai.toDecimal(1) === 1 ? 'i' : ai.toString() + 'i';
+			return r.toString() + sep + ip;
 		},
 		abs: function() {
 			//if possible, try no to convert to floating point
@@ -124,6 +131,9 @@ number.Complex = function(r, i) {
 				return number.Real(Math.sqrt(Math.pow(r.abs(),2) + Math.pow(i.abs(),2)));
 			}
 		},
+		//FIXME TODO:
+		//Some code uses isReal to see if Real specific functionality (that
+		//Complex) does not have, can be used.
 		isReal: function() {
 			//TODO: allow epsilon parameter?
 			return i.isZero();
@@ -138,8 +148,7 @@ number.Complex = function(r, i) {
 			return Math.atan(i.toDecimal(),r.toDecimal());
 		},
 		conj: function() {
-			//TODO: implement
-			//return number.Complex(r, number.subtract(0, i));
+			return number.Complex(r, number.subReal(number.Real(0), i));
 		},
 		isZero: function(epsilon) {
 			if(epsilon) {
@@ -150,7 +159,7 @@ number.Complex = function(r, i) {
 		},
 		inv: function() {
 			//1/(a + bi) = (a - bi)/(a^2 + b^2)
-			console.error("unimplemented");
+			return number.div(1,number.Complex(r,i));
 		}
 	};
 }
@@ -162,7 +171,7 @@ number.toComplex = function(a) {
 	}
 	if(typeof a === 'object' && a.isReal) {
 		//if number.Real/Rational
-		if(a.isReal()) {
+		if(!a.Im) {
 			return number.Complex(a,0);
 		//else already complex
 		} else {
@@ -213,6 +222,8 @@ number.divReal = function(a,b) {
 	if(b.isZero()) return NaN;
 	return number.multReal(a,b.inv());
 }
+
+//TODO: <, <=, ==, >=, > for Reals
 
 //convert to complex
 //apply operation
