@@ -220,26 +220,33 @@ number.divReal = function(a,b) {
 number.add = function(a,b) {
 	a = number.toComplex(a);
 	b = number.toComplex(b);
-	const r1 = a.Re();
-	const i1 = a.Im();
-
-	const r1 = a.Re();
-	const i1 = a.Im();
+	const r = number.addReal(a.Re(), b.Re());
+	const i = number.addReal(a.Im(), b.Im());
+	if(i.isZero()) return r;
+	return number.Complex(r,i);
 }
+
 number.subtract = function(a,b) {
 	//a,b -> a - b
 	a = number.toComplex(a);
 	b = number.toComplex(b);
+	const r = number.subReal(a.Re(), b.Re());
+	const i = number.subReal(a.Im(), b.Im());
+	if(i.isZero()) return r;
+	return number.Complex(r,i);
 }
+
 number.multiply = function(a,b) {
 	a = number.toComplex(a);
 	b = number.toComplex(b);
 }
+
 number.divide = function(a,b) {
 	//a,b -> a/b or NaN if b = 0
 	a = number.toComplex(a);
 	b = number.toComplex(b);
 }
+
 number.exp = function(a,n) {
 	//use montgomery exponentiation
 	//also look at de Moivre's identity
