@@ -4,14 +4,14 @@
  * Author: Adrian Stoll
  * Date: 3 July 2016
  *
- * Matricies are represented as multidimensional arrays of number.Real/Complex
+ * Matrices are represented as multidimensional arrays of number.Real/Complex
  */
 
 var matrix = {};
 
 function $(id) { return document.getElementById(id); }
 
-//create rxc matrix with inital entry value of initial (defaults to 0)
+//create rxc matrix with initial entry value of initial (defaults to 0)
 matrix.matrix = function(r,c, initial) {
 	//JavaScript the Good Parts, Douglas Crockford pg: 63
 	if(!initial) initial = 0;
@@ -135,9 +135,34 @@ matrix.sub = function(A, B, saveOriginal) {
 }
 
 matrix.mult = function(A, B) {
+	//nxm * mxp -> nxp matrix
+	const n = A.length, m = B.length, p = B[0].length;
+	const C = matrix.matrix(n, p);
+	for(let i = 0; i < n; i += 1) {
+		for(let j = 0; j < p; j += 1) {
+			let s = 0;
+			for(let k = 0; k < m; k += 1) {
+				s += A[i][k] * B[k][j];
+			}
+			C[i][j] = s;
+		}
+	}
+	return C;
 }
 
+//matrix exponentiation (matrix must be square)
 matrix.exp = function(A, n) {
+	if(n < 0) return;
+	let B = matrix.copy(A);
+	let C = matrix.id(A.length);
+	while(n > 0) {
+		if(n % 2) {
+			C = matrix.mult(B,C);
+		}
+		n = Math.floor(n/2);
+		B = matrix.mult(B,B);
+	}
+	return C;
 }
 
 matrix.equal = function(A, B, epsilon) {
@@ -170,7 +195,7 @@ matrix.norm2 = function(A) {
 
 //calculate the Frobenius Norm: http://mathworld.wolfram.com/FrobeniusNorm.html
 matrix.norm = function(A) {
-	//Frobenius norm is defined for matricies with complex entries
-	// (take the sum of the squares of the absolue values of the entries)
+	//Frobenius norm is defined for matrices with complex entries
+	// (take the sum of the squares of the absolute values of the entries)
 	return Math.sqrt(matrix.norm2(A));
 }
