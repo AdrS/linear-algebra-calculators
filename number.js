@@ -45,7 +45,7 @@ number.gcd = function(a,b) {
 }
 
 number.lcm = function(a,b) {
-	//take advantace of the equality a*b = gcd(a,b)*lcm(a,b)
+	//take advantage of the equality a*b = gcd(a,b)*lcm(a,b)
 	return a*b/number.gcd(a,b);
 }
 
@@ -329,5 +329,46 @@ number.parseReal = function(str) {
 		return number.Rational(strictParseInt(p[0]), strictParseInt(p[1]));
 	} else {
 		return number.Real(strictParseFloat(str));
+	}
+}
+
+number.parseComplex = function(str) {
+	function parseImgPart(s) {
+		//validate input: +|-[num]i or +|-i[num]
+		if(!/^(\-|\+)?([0-9]+(\.[0-9]+)?)?i$/.test(s) &&
+			!/^(\-|\+)?i([0-9]+(\.[0-9]+)?)?$/.test(s)) {
+			return NaN;
+		}
+		s = s.replace('i','');
+		//case: i,-i,+i
+		if(s === '' || s === '-' || s === '+') {
+			s = s + '1';
+		}
+		return number.parseReal(s);
+	}
+	//get rid of whitespace
+	str = str.replace(/\s+/g,'')
+
+	//if no imaginary part, then Real number
+	if(str.indexOf('i') == -1) {
+		return number.parseReal(str);
+	}
+
+	//make sure terms have a '+' between them
+	str = str.replace(/\-/g,'+-');
+	let p = str.split('+');
+	p = p.filter(function(x) { return x !== ''; });
+
+	//only the complex piece
+	if(p.length === 1) {
+		return number.Complex(0,parseImgPart(p[0]));
+	} else if(p.length === 2) {
+		//imaginary part comes first
+		if(p[0].indexOf('i') >= 0)
+			return number.Complex(number.parseReal(p[1]),parseImgPart(p[0]));
+		//imaginary part comes second
+		return number.Complex(number.parseReal(p[0]),parseImgPart(p[1]));
+	} else {
+		return NaN;
 	}
 }
