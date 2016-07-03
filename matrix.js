@@ -143,5 +143,20 @@ matrix.exp = function(A, n) {
 matrix.equal = function(A, B, epsilon) {
 }
 
+//sum of squares of matrix elements
+matrix.norm2 = function(A) {
+	let s = 0;
+	for(let i = 0; i < A.length; i += 1) {
+		for(let j = 0; j < A[i].length; j += 1) {
+			s += A[i][j] * A[i][j];
+		}
+	}
+	return s;
+}
+
+//calculate the Frobenius Norm: http://mathworld.wolfram.com/FrobeniusNorm.html
 matrix.norm = function(A) {
+	//Frobenius norm is defined for matricies with complex entries
+	// (take the sum of the squares of the absolue values of the entries)
+	return Math.sqrt(matrix.norm2(A));
 }
