@@ -141,6 +141,20 @@ matrix.exp = function(A, n) {
 }
 
 matrix.equal = function(A, B, epsilon) {
+	if(epsilon) {
+		for(let i = 0; i < A.length; i += 1) {
+			for(let j = 0; j < A[i].length; j += 1) {
+				if(Math.abs(A[i][j] - B[i][j]) >= epsilon) return false;
+			}
+		}
+	} else {
+		for(let i = 0; i < A.length; i += 1) {
+			for(let j = 0; j < A[i].length; j += 1) {
+				if(A[i][j] !== B[i][j]) return false;
+			}
+		}
+	}
+	return true;
 }
 
 //sum of squares of matrix elements
