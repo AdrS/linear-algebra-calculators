@@ -1,3 +1,4 @@
+"use strict"
 var number = {};
 
 number.Real = function(r) {
@@ -145,7 +146,7 @@ number.Complex = function(r, i) {
 			return i;
 		},
 		arg: function() {
-			return Math.atan(i.toDecimal(),r.toDecimal());
+			return Math.atan(i.toDecimal()/r.toDecimal());
 		},
 		conj: function() {
 			return number.Complex(r, number.subReal(number.Real(0), i));
@@ -241,6 +242,12 @@ number.gt = function(a,b) {
 	return !number.leq(a,b);
 }
 
+number.equal = function(a,b) {
+	a = number.toComplex(a);
+	b = number.toComplex(b);
+	return number.eq(a.Re(),b.Re(),0) && number.eq(a.Im(),b.Im(),0);
+}
+
 //convert to complex
 //apply operation
 //if real, convert back to real
@@ -295,9 +302,32 @@ number.div = function(a,b) {
 	return N.Complex(r,i);
 }
 
+//TODO: implement exp
 number.exp = function(a,n) {
 	//if decimal -> use Math.pow
 	//if rational -> Math.pow(n)/Math.pow(b) (if Math.pow(n) non int
 		// then use Math.pow(n/d)
 	//also look at de Moivre's identity for complex #s
+}
+
+number.parseReal = function(str) {
+	function strictParseInt(s) {
+		if(/^(\-|\+)?([0-9]+)$/.test(s)) return Number(s);
+		return NaN;
+	}
+	function strictParseFloat(s) {
+		//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat#A_stricter_parse_function
+		if(/^(\-|\+)?([0-9]+(\.[0-9]+)?)$/.test(s)) return Number(s);
+		return NaN
+	}
+	//get rid of whitespace
+	str = str.replace(/\s+/g,'')
+	const p = str.split('/');
+
+	//Rational [-][0-9]+/[0-9]+
+	if(p.length === 2) {
+		return number.Rational(strictParseInt(p[0]), strictParseInt(p[1]));
+	} else {
+		return number.Real(strictParseFloat(str));
+	}
 }
