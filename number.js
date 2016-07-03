@@ -1,4 +1,9 @@
 "use strict"
+
+/*
+ * Author: Adrian Stoll
+ * Date: 2 July 2016
+ */
 var number = {};
 
 number.Real = function(r) {
