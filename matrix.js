@@ -26,6 +26,21 @@ matrix.matrix = function(r,c, initial) {
 	return A;
 }
 
+//returns a copy of A
+matrix.copy = function(A) {
+	const r = A.length;
+	const c = A[0].length;
+	const Ac = [];
+	for(let i = 0; i < r; i += 1) {
+		const row = [];
+		for(let j = 0; j < c; j += 1) {
+			row[j] = A[i][j];
+		}
+		Ac[i] = row;
+	}
+	return Ac;
+}
+
 matrix.str = function(A) {
 	let parts = [];
 	for(let i = 0; i < A.length; i += 1) {
@@ -62,19 +77,39 @@ matrix.inv = function(A) {
 }
 
 //scales elements of matrix A, by k
-matrix.scale = function(k, A) {
-	for(let i = 0; i < A.length; i += 1) {
-		for(let j = 0; j < A[i].length; j += 1) {
-			A[i][j] *= k;
+matrix.scale = function(k, A, saveOriginal) {
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	for(let i = 0; i < Ac.length; i += 1) {
+		for(let j = 0; j < Ac[i].length; j += 1) {
+			Ac[i][j] *= k;
 		}
 	}
-	return A;
+	return Ac;
 }
 
-matrix.add = function(A, B) {
+//returns matrix sum
+matrix.add = function(A, B, saveOriginal) {
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	const r = Ac.length;
+	const c = Ac[0].length;
+	for(let i = 0; i < r; i += 1) {
+		for(let j = 0; j < c; j += 1) {
+			Ac[i][j] += B[i][j];
+		}
+	}
+	return Ac;
 }
 
-matrix.sub = function(A, B) {
+matrix.sub = function(A, B, saveOriginal) {
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	const r = Ac.length;
+	const c = Ac[0].length;
+	for(let i = 0; i < r; i += 1) {
+		for(let j = 0; j < c; j += 1) {
+			Ac[i][j] -= B[i][j];
+		}
+	}
+	return Ac;
 }
 
 matrix.mult = function(A, B) {
