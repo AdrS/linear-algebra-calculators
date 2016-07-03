@@ -70,6 +70,28 @@ matrix.trans = function(A) {
 	return T;
 }
 
+///////////ELEMENTARY ROW OPERATIONS///////////
+//scale row r of matrix A by k
+matrix.scaleRow = function(A, r, k) {
+	for(let i = 0; i < A[r].length; i += 1) {
+		A[r][i] *= k;
+	}
+}
+
+//swap rows i and j of matrix A
+matrix.swapRows = function(A, i, j) {
+	const t = A[i];
+	A[i] = A[j];
+	A[j] = t;
+}
+
+//add k*row j to row i
+matrix.addToRow  = function(A, i, j, k) {
+	for(let l = 0; l < A[i].length; l += 1) {
+		A[i][l] += k*A[j][l];
+	}
+}
+
 matrix.det = function(A) {
 }
 
