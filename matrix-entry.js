@@ -47,7 +47,7 @@ var matrix_input = function(divid, options, r, c) {
 				} else {
 					input.type = 'text';
 					input.addEventListener('change', function() {
-						//TODO: add validation
+						//TODO: add validation?
 					});
 				}
 				input.value = '0';
@@ -134,11 +134,41 @@ var matrix_input = function(divid, options, r, c) {
 	return {
 		//returns the user entered matrix if valid
 		get_matrix: function() {
-			const mat = [];
-			for(let i = 0; i < r; i += 1) {
+			function parse(s) {
+				//TODO: parseFloat('123abc') -> 123 is not desirable
+				const n = Number.parseFloat(s);
+				return isNaN(n) ? undefined : n;
 			}
+			if(entry_type === 'real') {
+				var parse = number.parseReal;
+			} else if(entry_type === 'complex') {
+				var parse = number.parseComplex;
+			}
+			const matrix = [];
+			const table = $(divid + '_table');
+			for(let i = 0; i < table.children.length; i += 1) {
+				const row = [];
+				const tblrow = table.children[i];
+				for(let j = 0; j < tblrow.children.length; j += 1) {
+					const val = parse(tblrow.children[j].lastChild.value);
+					if(isNaN(val) && typeof val !== 'object') {
+						//TODO: highlight invalid entries
+						return;
+					}
+					row[j] = val;
+				}
+				matrix[i] = row;
+			}
+			return matrix;
 		},
 		reset: function() {
+			const oldr = r;
+			const oldc = c;
+			r = c = 0;
+			updateEntryInput();
+			r = oldr;
+			c = oldc;
+			updateEntryInput();
 		}
 	};
 }
