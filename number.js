@@ -128,7 +128,7 @@ number.Complex = function(r, i) {
 			return r.toString() + sep + ip;
 		},
 		abs: function() {
-			//if possible, try no to convert to floating point
+			//if possible, try not to convert to floating point
 			if(r.isZero()) {
 				return i.abs();
 			} else if(i.isZero()) {
@@ -139,7 +139,7 @@ number.Complex = function(r, i) {
 		},
 		//FIXME TODO:
 		//Some code uses isReal to see if Real specific functionality (that
-		//Complex) does not have, can be used.
+		//Complex does not have), can be used.
 		isReal: function() {
 			//TODO: allow epsilon parameter?
 			return i.isZero();
@@ -247,10 +247,10 @@ number.gt = function(a,b) {
 	return !number.leq(a,b);
 }
 
-number.equal = function(a,b) {
+number.equal = function(a,b, epsilon) {
 	a = number.toComplex(a);
 	b = number.toComplex(b);
-	return number.eq(a.Re(),b.Re(),0) && number.eq(a.Im(),b.Im(),0);
+	return number.eq(a.Re(),b.Re(), epsilon) && number.eq(a.Im(),b.Im(), epsilon);
 }
 
 //convert to complex

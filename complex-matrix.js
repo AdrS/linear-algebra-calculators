@@ -2,11 +2,11 @@
 
 /*
  * Author: Adrian Stoll
- * Date: 3 July 2016
+ * Date: 5 July 2016
  *
- * Matrices are represented as multidimensional arrays JavaScript numbers
+ * Matrices are represented as multidimensional arrays of numbers.Real/Complex
  */
-//TODO: write version for number.Real/Complex entries
+//TODO: should change module name (so it doesn't conflict with native float matrix.js)
 var matrix = {};
 
 function $(id) { return document.getElementById(id); }
@@ -14,7 +14,7 @@ function $(id) { return document.getElementById(id); }
 //create rxc matrix with initial entry value of initial (defaults to 0)
 matrix.matrix = function(r,c, initial) {
 	//JavaScript the Good Parts, Douglas Crockford pg: 63
-	if(!initial) initial = 0;
+	if(!initial) initial = number.Real(0);
 	const A = [];
 	for(let i = 0; i < r; i += 1) {
 		const row = [];
@@ -53,7 +53,8 @@ matrix.str = function(A) {
 //creates nxn identity matrix
 matrix.id = function(n) {
 	const I = matrix.matrix(n,n);
-	for(let i = 0; i < n; i += 1) I[i][i] = 1;
+	const one = number.Real(1);
+	for(let i = 0; i < n; i += 1) I[i][i] = one;
 	return I;
 }
 
@@ -61,7 +62,7 @@ matrix.id = function(n) {
 matrix.trans = function(A) {
 	const r = A.length;
 	const c = A[0].length;
-	const T = matrix.matrix(c,r);
+	const T = matrix.matrix(c,r, 1);
 	for(let i = 0; i < r; i += 1) {
 		for(let j = 0; j < c; j += 1) {
 			T[j][i] = A[i][j];
@@ -74,7 +75,7 @@ matrix.trans = function(A) {
 //scale row r of matrix A by k
 matrix.scaleRow = function(A, r, k) {
 	for(let i = 0; i < A[r].length; i += 1) {
-		A[r][i] *= k;
+		A[r][i] = number.mult(k, A[r][i]);
 	}
 }
 
@@ -88,7 +89,7 @@ matrix.swapRows = function(A, i, j) {
 //add k*row j to row i
 matrix.addToRow  = function(A, i, j, k) {
 	for(let l = 0; l < A[i].length; l += 1) {
-		A[i][l] += k*A[j][l];
+		A[i][l] = number.add(A[i][l], number.mult(k,A[j][l]));
 	}
 }
 
@@ -108,7 +109,7 @@ matrix.scale = function(k, A, saveOriginal) {
 	let Ac = saveOriginal ? matrix.copy(A) : A;
 	for(let i = 0; i < Ac.length; i += 1) {
 		for(let j = 0; j < Ac[i].length; j += 1) {
-			Ac[i][j] *= k;
+			Ac[i][j] = number.mult(k, Ac[i][j]);
 		}
 	}
 	return Ac;
@@ -121,7 +122,7 @@ matrix.add = function(A, B, saveOriginal) {
 	const c = Ac[0].length;
 	for(let i = 0; i < r; i += 1) {
 		for(let j = 0; j < c; j += 1) {
-			Ac[i][j] += B[i][j];
+			Ac[i][j] = number.add(A[i][j],B[i][j]);
 		}
 	}
 	return Ac;
@@ -133,7 +134,7 @@ matrix.sub = function(A, B, saveOriginal) {
 	const c = Ac[0].length;
 	for(let i = 0; i < r; i += 1) {
 		for(let j = 0; j < c; j += 1) {
-			Ac[i][j] -= B[i][j];
+			Ac[i][j] = number.sub(A[i][j],B[i][j]);
 		}
 	}
 	return Ac;
@@ -145,9 +146,9 @@ matrix.mult = function(A, B) {
 	const C = matrix.matrix(n, p);
 	for(let i = 0; i < n; i += 1) {
 		for(let j = 0; j < p; j += 1) {
-			let s = 0;
+			let s = number.Real(0);
 			for(let k = 0; k < m; k += 1) {
-				s += A[i][k] * B[k][j];
+				s = number.add(s, number.mult(A[i][k], B[k][j]));
 			}
 			C[i][j] = s;
 		}
@@ -171,17 +172,9 @@ matrix.exp = function(A, n) {
 }
 
 matrix.equal = function(A, B, epsilon) {
-	if(epsilon) {
-		for(let i = 0; i < A.length; i += 1) {
-			for(let j = 0; j < A[i].length; j += 1) {
-				if(Math.abs(A[i][j] - B[i][j]) >= epsilon) return false;
-			}
-		}
-	} else {
-		for(let i = 0; i < A.length; i += 1) {
-			for(let j = 0; j < A[i].length; j += 1) {
-				if(A[i][j] !== B[i][j]) return false;
-			}
+	for(let i = 0; i < A.length; i += 1) {
+		for(let j = 0; j < A[i].length; j += 1) {
+			if(!number.equal(A[i][j], B[i][j], epsilon)) return false;
 		}
 	}
 	return true;
@@ -189,10 +182,13 @@ matrix.equal = function(A, B, epsilon) {
 
 //sum of squares of matrix elements
 matrix.norm2 = function(A) {
-	let s = 0;
+	let s = number.Real(0);
 	for(let i = 0; i < A.length; i += 1) {
 		for(let j = 0; j < A[i].length; j += 1) {
-			s += A[i][j] * A[i][j];
+			//TODO: prevent use of sqrt when calculating abs^2 of complex numbers
+			//		ie: |a + bi| = a^2 + b^2
+			let a = A[i][j].abs();
+			s = number.add(s, number.mult(a,a));
 		}
 	}
 	return s;
@@ -202,5 +198,5 @@ matrix.norm2 = function(A) {
 matrix.norm = function(A) {
 	//Frobenius norm is defined for matrices with complex entries
 	// (take the sum of the squares of the absolute values of the entries)
-	return Math.sqrt(matrix.norm2(A));
+	return Math.sqrt(matrix.norm2(A).toDecimal());
 }
