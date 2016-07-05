@@ -341,7 +341,9 @@ number.parseComplex = function(str) {
 	function parseImgPart(s) {
 		//validate input: +|-[num]i or +|-i[num]
 		if(!/^(\-|\+)?([0-9]+(\.[0-9]+)?)?i$/.test(s) &&
-			!/^(\-|\+)?i([0-9]+(\.[0-9]+)?)?$/.test(s)) {
+			!/^(\-|\+)?i([0-9]+(\.[0-9]+)?)?$/.test(s) &&
+			!/^(\-|\+)?[0-9]+\/[0-9]+i$/.test(s) &&
+			!/^(\-|\+)?i[0-9]+\/[0-9]+$/.test(s)) {
 			return NaN;
 		}
 		s = s.replace('i','');
