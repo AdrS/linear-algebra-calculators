@@ -37,15 +37,8 @@ var matrix_input = function(divid, options, r, c) {
 		return d;
 	}
 
-	function entrySetup() {
-		//////////////SET UP ENTRY INPUT
-		const table = $(divid + '_table');
-		table.innerHTML = '';
-		//TODO: do not overwrite existing elements unless table is being shrunk
-
-		for(let i = 0; i < r; i += 1) {
-			const tr = create('tr');
-			for(let j = 0; j < c; j += 1) {
+	function updateEntryInput() {
+		function newEntry() {
 				const td = create('td');
 				const input = create('input');
 
@@ -54,16 +47,35 @@ var matrix_input = function(divid, options, r, c) {
 				} else {
 					input.type = 'text';
 					input.addEventListener('change', function() {
-						//onleave (if it exists, might be more appropriate)
-						//add validation
+						//TODO: add validation
 					});
 				}
 				input.value = '0';
-
 				td.appendChild(input);
-				tr.appendChild(td);
-			}
+				return td;
+		}
+		//////////////SET UP ENTRY INPUT
+		const table = $(divid + '_table');
+		const old_rows = table.children.length;
+
+		//get rid of excess rows (if any)
+		while(table.children.length > r) table.removeChild(table.lastChild);
+
+		//add new rows
+		while(table.children.length < r) {
+			//add row
+			const tr = create('tr');
+			for(let j = 0; j < c; j += 1) tr.appendChild(newEntry());
 			table.appendChild(tr);
+		}
+
+		//make the number of columns in the original rows match the new ones
+		for(let i = 0; i < Math.min(old_rows,r); i += 1) {
+			const row = table.children[i];
+			//get rid of excess entries
+			while(row.children.length > c) row.removeChild(row.lastChild);
+			//add missing entries
+			while(row.children.length < c) row.appendChild(newEntry());
 		}
 	}
 
@@ -84,7 +96,7 @@ var matrix_input = function(divid, options, r, c) {
 				//update second dimension
 				$(divid + '_d2').innerText = this.value;
 				r = c = parseInt(this.value);
-				entrySetup();
+				updateEntryInput();
 			});
 			const d2 = create('span', divid + '_d2');
 			d2.innerText = r.toString();
@@ -99,13 +111,13 @@ var matrix_input = function(divid, options, r, c) {
 			d1.value = r;
 			d1.addEventListener('change', function() {
 				r = parseInt(this.value);
-				entrySetup();
+				updateEntryInput();
 			});
 			const d2 = dimInput(divid + '_d2');
 			d2.value = c;
 			d2.addEventListener('change', function() {
 				c = parseInt(this.value);
-				entrySetup();
+				updateEntryInput();
 			});
 			dc.appendChild(d1);
 			d1.insertAdjacentText('afterEnd', ' by ');
@@ -115,13 +127,16 @@ var matrix_input = function(divid, options, r, c) {
 
 		const table = create('table', divid + '_table');
 		div.appendChild(table);
-		entrySetup();
+		updateEntryInput();
 	}
 
 	setup();
 	return {
 		//returns the user entered matrix if valid
 		get_matrix: function() {
+			const mat = [];
+			for(let i = 0; i < r; i += 1) {
+			}
 		},
 		reset: function() {
 		}
