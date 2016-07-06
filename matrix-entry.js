@@ -3,7 +3,7 @@
 /*
  * Author: Adrian Stoll
  * Date: 5 July 2016
- *
+ * Requires: number.js
  */
 
 	function $(id) { return document.getElementById(id); }
@@ -128,6 +128,7 @@ var matrix_input = function(divid, options, r, c) {
 		const table = create('table', divid + '_table');
 		div.appendChild(table);
 		updateEntryInput();
+		//TODO: add reset button
 	}
 
 	setup();

@@ -29,6 +29,9 @@ number.Real = function(r) {
 			}
 			return number.Real(i);
 		},
+		neg: function() {
+			return number.Real(-r);
+		},
 		isZero: function(epsilon) {
 			if(epsilon) {
 				return Math.abs(r) < epsilon;
@@ -85,6 +88,9 @@ number.Rational = function(n,d) {
 			//the Rational constructor will handle case of inv(0)
 			return number.Rational(d,n);
 		},
+		neg: function() {
+			return number.Rational(-n, d);
+		},
 		isZero: function(epsilon) {
 			if(epsilon) {
 				return Math.abs(n/d) < epsilon;
@@ -134,7 +140,7 @@ number.Complex = function(r, i) {
 			} else if(i.isZero()) {
 				return r.abs();
 			} else {
-				return number.Real(Math.sqrt(Math.pow(r.abs(),2) + Math.pow(i.abs(),2)));
+				return number.Real(Math.sqrt(Math.pow(r.abs().toDecimal(),2) + Math.pow(i.abs().toDecimal(),2)));
 			}
 		},
 		//FIXME TODO:
@@ -166,7 +172,10 @@ number.Complex = function(r, i) {
 		inv: function() {
 			//1/(a + bi) = (a - bi)/(a^2 + b^2)
 			return number.div(1,number.Complex(r,i));
-		}
+		},
+		neg: function() {
+			return number.Complex(r.neg(), i.neg());
+		},
 	};
 }
 
