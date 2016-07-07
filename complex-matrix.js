@@ -93,6 +93,42 @@ matrix.addToRow  = function(A, i, j, k) {
 	}
 }
 
+matrix.rref = function(A, saveOriginal) {
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	let num_pivots = 0;
+	//for each column
+	for(let i = 0; i < Ac[0].length; i += 1) {
+		//find column's pivot (if there is one)
+		let imax = num_pivots;
+		let max = Ac[imax][i].abs().toDecimal();
+		for(let j = num_pivots + 1; j < Ac.length; j += 1) {
+			const cur = Ac[j][i].abs().toDecimal();
+			if(cur > max) {
+				imax = j;
+				max = cur;
+			}
+		}
+
+		//if no pivot, then nothing to do
+		if(Ac[imax][i].abs().toDecimal() === 0) continue;
+
+		//make make upper row be one with the pivot
+		matrix.swapRows(Ac, num_pivots, imax);
+
+		//scale row with pivot
+		matrix.scaleRow(Ac, num_pivots, Ac[num_pivots][i].inv());
+
+		//cancel out elements above and below pivot
+		for(let j = 0; j < Ac.length; j += 1) {
+			//don't want to cancel out pivot
+			if(j === num_pivots) continue;
+			matrix.addToRow(Ac, j, num_pivots, Ac[j][i].neg());
+		}
+		num_pivots += 1;
+	}
+	return Ac;
+}
+
 //TOOD: LU decomposition -> deterimant & inverse
 matrix.det = function(A) {
 	let s = 1;
