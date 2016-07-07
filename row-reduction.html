@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Reduced Row Echelon Form Calculator</title>
+	<title>Reduced Row Echelon Form Calculator (With Steps for Complex Numbers)</title>
 	<meta name="author" content="Adrian Stoll">
 	<script src='number.js'> </script>
 	<script src='complex-matrix.js'> </script>
@@ -17,7 +17,9 @@
 	<div>
 		<input type='button' id='calculate' value='Calculate RREF' />
 		<label>Show steps:</label>
-		<input type='checkbox' checked='true' />
+		<input type='checkbox' checked='true' id='show_steps'/>
+	</div>
+	<div id='results'>
 	</div>
 	<!-- list requirements for rref & algorithm -->
 <hr>

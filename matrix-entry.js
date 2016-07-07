@@ -177,11 +177,13 @@ var matrix_display = function(matrix, divid) {
 	//set up matrix
 	const table = create('table');
 	table.style.border = '1px solid';
+	table.style['text-align'] = 'right';
 
 	for(let i = 0; i < matrix.length; i += 1) {
 		const row = create('tr');
 		for(let j = 0; j < matrix[i].length; j += 1) {
 			const el = create('td');
+			el.style.padding = '10px';
 			el.innerText = matrix[i][j].toString();
 			row.appendChild(el);
 		}
