@@ -153,7 +153,7 @@ var matrix_input = function(divid, options, r, c) {
 				for(let j = 0; j < tblrow.children.length; j += 1) {
 					const val = parse(tblrow.children[j].lastChild.value);
 					if(isNaN(val) && typeof val !== 'object') {
-						//TODO: highlight invalid entries
+						//TODO: highlight invalid entries (give higher priority)
 						return;
 					}
 					row[j] = val;
@@ -219,7 +219,6 @@ var matrix_display = function(matrix, divid) {
 				}
 			}
 		}
-		//NOTE: could an update function to call when matrix changes
 	};
 }
 //TODO: add functions for exporting/importing as latex, python array, matlab data file, ...

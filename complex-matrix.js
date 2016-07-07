@@ -96,8 +96,8 @@ matrix.addToRow  = function(A, i, j, k) {
 matrix.rref = function(A, saveOriginal) {
 	let Ac = saveOriginal ? matrix.copy(A) : A;
 	let num_pivots = 0;
-	//for each column
-	for(let i = 0; i < Ac[0].length; i += 1) {
+	const max_pivots = Math.min(Ac.length, Ac[0].length);
+	for(let i = 0; i < max_pivots; i += 1) {
 		//find column's pivot (if there is one)
 		let imax = num_pivots;
 		let max = Ac[imax][i].abs().toDecimal();
