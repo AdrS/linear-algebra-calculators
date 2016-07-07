@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<title>Determinant Calculator for Complex Matrices</title>
+	<meta name="author" content="Adrian Stoll">
+	<script src='number.js'> </script>
+	<script src='complex-matrix.js'> </script>
+	<script src='matrix-entry.js'> </script>
+	<script src='determinant.js'> </script>
+</head>
+<body>
+	<h1>Determinant Calculator for Complex Matrices</h1>
+	<p>Notes: Matrix entries can be complex and rational numbers such as <code>-12/31</code> and <code>1.2 - 1/3i</code>. To compute the determinant of a square matrix apply <a href='row-reduction.html'>row reduction</a>. The determinant is the product of the pivots with the sign flipped if the number of row swaps is odd. If row reduction does not produce an identity matrix, then the matrix is singular with determinant 0.</p>
+	<div id='matrix'>
+	</div>
+	<div>
+		<input type='button' id='calculate' value='Compute Determinant' />
+	</div>
+	<div id='results'>
+	</div>
+<hr>
+Written by Adrian Stoll on 07 Jul 2016
+</body>
+</html>

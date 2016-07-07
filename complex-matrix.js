@@ -129,10 +129,46 @@ matrix.rref = function(A, saveOriginal) {
 	return Ac;
 }
 
-//TOOD: LU decomposition -> deterimant & inverse
-matrix.det = function(A) {
-	let s = 1;
-	console.error("unimplemented");
+//TOOD: LU decomposition + port to native JavaScript number matrix library
+matrix.det = function(A, saveOriginal) {
+	//must be square in order for determinant to be defined
+	if(A.length !== A[0].length) return;
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	let det = number.Real(1);
+
+	for(let i = 0; i < Ac.length; i += 1) {
+		//find column's pivot
+		let imax = i;
+		let max = Ac[imax][i].abs().toDecimal();
+		for(let j = i + 1; j < Ac.length; j += 1) {
+			const cur = Ac[j][i].abs().toDecimal();
+			if(cur > max) {
+				imax = j;
+				max = cur;
+			}
+		}
+
+		//if no pivot, then matrix must be singular
+		if(max === 0) return number.Real(0);
+
+		//determinant is product of pivots
+		det = number.mult(det, Ac[imax][i]);
+
+		//if row swap necessary, then must update det sign
+		if(imax !== i) {
+			//make make upper row be one with the pivot
+			matrix.swapRows(Ac, i, imax);
+			det = det.neg();
+		}
+
+		//cancel out elements below pivot
+		for(let j = i + 1; j < Ac.length; j += 1) {
+			const k = number.div(Ac[j][i].neg(), Ac[i][i]);
+			if(k.isZero()) continue;
+			matrix.addToRow(Ac, j, i, k);
+		}
+	}
+	return det;
 }
 
 //returns NaN if matrix is singular
