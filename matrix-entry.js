@@ -173,3 +173,51 @@ var matrix_input = function(divid, options, r, c) {
 		}
 	};
 }
+var matrix_display = function(matrix, divid) {
+	//set up matrix
+	const table = create('table');
+	table.style.border = '1px solid';
+
+	for(let i = 0; i < matrix.length; i += 1) {
+		const row = create('tr');
+		for(let j = 0; j < matrix[i].length; j += 1) {
+			const el = create('td');
+			el.innerText = matrix[i][j].toString();
+			row.appendChild(el);
+		}
+		table.appendChild(row);
+	}
+	$(divid).appendChild(table);
+
+	return {
+		remove: function() {
+			table.remove();
+		},
+		highlightCell: function(row, col, color, border) {
+			const el = table.children[row].children[col];
+			if(border) el.style.border = '1px solid ' + color;
+			else el.style.color = color;
+		},
+		highlightRow: function(row, color) {
+			for(let i = 0; i < matrix[row].length; i += 1) {
+				this.highlightCell(row, i, color);
+			}
+		},
+		highlightCol: function(col, color) {
+			for(let i = 0; i < matrix.length; i += 1) {
+				this.highlightCell(i, col, color);
+			}
+		},
+		clearHighlights: function() {
+			//TODO: write apply to table function
+			for(let i = 0; i < table.children.length; i += 1) {
+				const row = table.children[i];
+				for(let j = 0; j < row.children.length; j += 1) {
+					row.children[j].style.color = row.children[j].style.border = 'initial';
+				}
+			}
+		}
+		//NOTE: could an update function to call when matrix changes
+	};
+}
+//TODO: add functions for exporting/importing as latex, python array, matlab data file, ...
