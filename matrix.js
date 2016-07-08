@@ -92,15 +92,107 @@ matrix.addToRow  = function(A, i, j, k) {
 	}
 }
 
-//TOOD: LU decomposition -> deterimant & inverse
-matrix.det = function(A) {
-	let s = 1;
-	console.error("unimplemented");
+matrix.rref = function(A, saveOriginal, epsilon) {
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	let num_pivots = 0;
+	const max_pivots = Math.min(Ac.length, Ac[0].length);
+	for(let i = 0; i < max_pivots; i += 1) {
+		//find column's pivot (if there is one)
+		let imax = num_pivots;
+		let max = Math.abs(Ac[imax][i]);
+		for(let j = num_pivots + 1; j < Ac.length; j += 1) {
+			const cur = Math.abs(Ac[j][i]);
+			if(cur > max) {
+				imax = j;
+				max = cur;
+			}
+		}
+
+		//if no pivot, then nothing to do
+		if(max === 0) continue;
+
+		//make make upper row be one with the pivot
+		matrix.swapRows(Ac, num_pivots, imax);
+
+		//scale row with pivot
+		matrix.scaleRow(Ac, num_pivots, 1/Ac[num_pivots][i]);
+
+		//cancel out elements above and below pivot
+		for(let j = 0; j < Ac.length; j += 1) {
+			//don't want to cancel out pivot
+			if(j === num_pivots) continue;
+			matrix.addToRow(Ac, j, num_pivots, -Ac[j][i]);
+		}
+		num_pivots += 1;
+	}
+	return Ac;
 }
 
-//returns NaN if matrix is singular
+matrix.det = function(A, saveOriginal) {
+	//must be square in order for determinant to be defined
+	if(A.length !== A[0].length) return;
+	let Ac = saveOriginal ? matrix.copy(A) : A;
+	let det = 1;
+
+	for(let i = 0; i < Ac.length; i += 1) {
+		//find column's pivot
+		let imax = i;
+		let max = Math.abs(Ac[imax][i]);
+		for(let j = i + 1; j < Ac.length; j += 1) {
+			const cur = Math.abs(Ac[j][i]);
+			if(cur > max) {
+				imax = j;
+				max = cur;
+			}
+		}
+
+		//if no pivot, then matrix must be singular
+		if(max === 0) return 0;
+
+		//determinant is product of pivots
+		det *= Ac[imax][i];
+
+		//if row swap necessary, then must update det sign
+		if(imax !== i) {
+			//make make upper row be one with the pivot
+			matrix.swapRows(Ac, i, imax);
+			det = -det;
+		}
+
+		//cancel out elements below pivot
+		for(let j = i + 1; j < Ac.length; j += 1) {
+			const k = -Ac[j][i]/Ac[i][i];
+			if(k === 0) continue;
+			matrix.addToRow(Ac, j, i, k);
+		}
+	}
+	return det;
+}
+
+//returns undefined if matrix is singular
 matrix.inv = function(A) {
-	console.error("unimplemented");
+	//cannot compute for non-square matrix (TODO: what about pseudo inverse calculation)
+	if(A.length !== A[0].length) return;
+
+	//create augmented matrix A|I
+	const Aug = matrix.copy(A);
+
+	for(let i = 0; i < A.length; i += 1) {
+		for(let j = 0; j < A.length; j += 1) {
+			Aug[i][A.length + j] = Number(i === j);
+		}
+	}
+
+	//apply row reduction to augmented matrix
+	matrix.rref(Aug);
+
+	//check for singularity
+	if(Aug[A.length - 1][A.length - 1] === 0) return;
+
+	//slice of identity portion to get inverse I|A' -> A'
+	for(let i = 0; i < A.length; i += 1) Aug[i] = Aug[i].slice(A.length);
+
+	return Aug;
 }
 
 //scales elements of matrix A, by k
