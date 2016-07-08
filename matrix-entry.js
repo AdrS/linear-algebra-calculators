@@ -146,21 +146,25 @@ var matrix_input = function(divid, options, r, c) {
 				var parse = number.parseComplex;
 			}
 			const matrix = [];
+			let valid = true;
 			const table = $(divid + '_table');
 			for(let i = 0; i < table.children.length; i += 1) {
 				const row = [];
 				const tblrow = table.children[i];
 				for(let j = 0; j < tblrow.children.length; j += 1) {
-					const val = parse(tblrow.children[j].lastChild.value);
+					const el = tblrow.children[j].lastChild;
+					const val = parse(el.value);
 					if(isNaN(val) && typeof val !== 'object') {
-						//TODO: highlight invalid entries (give higher priority)
-						return;
+						el.style.borderColor = 'red';
+						valid = false;
+					} else {
+						el.style.borderColor = 'initial';
 					}
 					row[j] = val;
 				}
 				matrix[i] = row;
 			}
-			return matrix;
+			if(valid) return matrix;
 		},
 		reset: function() {
 			const oldr = r;
@@ -169,6 +173,11 @@ var matrix_input = function(divid, options, r, c) {
 			updateEntryInput();
 			r = oldr;
 			c = oldc;
+			updateEntryInput();
+		},
+		update: function() {
+			r = parseInt($(divid + '_d1').value);
+			c = parseInt($(divid + '_d2').value);
 			updateEntryInput();
 		}
 	};
