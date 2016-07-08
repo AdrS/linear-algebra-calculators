@@ -171,9 +171,33 @@ matrix.det = function(A, saveOriginal) {
 	return det;
 }
 
-//returns NaN if matrix is singular
+//returns undefined if matrix is singular
 matrix.inv = function(A) {
-	console.error("unimplemented");
+	//cannot compute for non-square matrix (TODO: what about pseudo inverse calculation)
+	if(A.length !== A[0].length) return;
+
+	//create augmented matrix A|I
+	const Aug = matrix.copy(A);
+
+	const one = number.Real(1);
+	const zero = number.Real(0);
+
+	for(let i = 0; i < A.length; i += 1) {
+		for(let j = 0; j < A.length; j += 1) {
+			Aug[i][A.length + j] = i === j ? one : zero;
+		}
+	}
+
+	//apply row reduction to augmented matrix
+	matrix.rref(Aug);
+
+	//check for singularity
+	if(Aug[A.length - 1][A.length - 1].isZero()) return;
+
+	//slice of identity portion to get inverse I|A' -> A'
+	for(let i = 0; i < A.length; i += 1) Aug[i] = Aug[i].slice(A.length);
+
+	return Aug;
 }
 
 //scales elements of matrix A, by k

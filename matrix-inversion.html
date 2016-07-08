@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<title>Complex Matrix Inverse Calculator (With Steps)</title>
+	<meta name="author" content="Adrian Stoll">
+	<script src='number.js'> </script>
+	<script src='complex-matrix.js'> </script>
+	<script src='matrix-entry.js'> </script>
+	<script src='matrix-inversion.js'> </script>
+</head>
+<body>
+	<h1>Complex Matrix Inverse Calculator</h1>
+	<p>Rational entries of the form a/b and complex entries of the form a+bi are supported. Examples: <code>-5/12</code>, <code>-2i + 4.5</code>. Warning: JavaScript can only store integers up to 2^53 - 1 = 9007199254740991. Because this implementation uses a pair of integers to represent rational numbers, incorrect results can be produced when intermediate values are supposed to have numerators or denominator exceeding this maximum.</p>
+	<div id='matrix'>
+	</div>
+	<div>
+		<input type='button' id='calculate' value='Find Inverse' />
+	</div>
+	<div id='results'>
+	</div>
+<hr>
+Written by Adrian Stoll on 08 Jul 2016
+</body>
+</html>
