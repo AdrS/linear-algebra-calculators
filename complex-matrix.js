@@ -129,7 +129,7 @@ matrix.rref = function(A, saveOriginal) {
 	return Ac;
 }
 
-//TOOD: LU decomposition + port to native JavaScript number matrix library
+//TODO: LU decomposition + port to native JavaScript number matrix library
 matrix.det = function(A, saveOriginal) {
 	//must be square in order for determinant to be defined
 	if(A.length !== A[0].length) return;
@@ -295,4 +295,11 @@ matrix.norm = function(A) {
 	//Frobenius norm is defined for matrices with complex entries
 	// (take the sum of the squares of the absolute values of the entries)
 	return Math.sqrt(matrix.norm2(A).toDecimal());
+}
+
+matrix.trace = function(A) {
+	if(A.length !== A[0].length) return;
+	let tr = number.Real(0);
+	for(let i = 0; i < A.length; i += 1) tr = number.add(tr, A[i][i]);
+	return tr;
 }

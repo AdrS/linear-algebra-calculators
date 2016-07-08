@@ -204,3 +204,10 @@ matrix.norm = function(A) {
 	// (take the sum of the squares of the absolute values of the entries)
 	return Math.sqrt(matrix.norm2(A));
 }
+
+matrix.trace = function(A) {
+	if(A.length !== A[0].length) return;
+	let tr = 0;
+	for(let i = 0; i < A.length; i += 1) tr += A[i][i];
+	return tr;
+}
