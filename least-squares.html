@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<title>Least Squares Calculator</title>
+	<meta name="author" content="Adrian Stoll">
+	<script src='matrix.js'></script>
+	<script src='matrix-entry.js'></script>
+	<script src='least-squares.js'></script>
+</head>
+<body>
+	<h1>Least Squares Approximation</h1>
+	<p>This calculates the least squares solution of the equation AX=B by solving the normal equation A<sup>T</sup>AX = A<sup>T</sup>B. Note: this method requires that A not have any redundant rows.</p>
+	<h2>A</h2>
+	<div id='coef_matrix'></div>
+	<h2>B</h2>
+	<div id='val_matrix'></div>
+	<div>
+		<input type='button' id='calculate' value='Calculate least squares solution' />
+	</div>
+	<div id='results'></div>
+<hr>
+Written by Adrian Stoll on 08 Jul 2016
+</body>
+</html>
