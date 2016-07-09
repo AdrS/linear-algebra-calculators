@@ -58,6 +58,9 @@ var matrix_input = function(divid, options, r, c) {
 		const table = $(divid + '_table');
 		const old_rows = table.children.length;
 
+		$(divid + '_d1').value = r;
+		$(divid + '_d2').value = c;
+
 		//get rid of excess rows (if any)
 		while(table.children.length > r) table.removeChild(table.lastChild);
 
@@ -175,9 +178,16 @@ var matrix_input = function(divid, options, r, c) {
 			c = oldc;
 			updateEntryInput();
 		},
-		update: function() {
-			r = parseInt($(divid + '_d1').value);
-			c = parseInt($(divid + '_d2').value);
+		setRows: function(rows) {
+			if(dim_type === 'fixed') return;
+			r = rows;
+			if(dim_type === 'square') c = r;
+			updateEntryInput();
+		},
+		setCols: function(cols) {
+			if(dim_type === 'fixed') return;
+			c = cols;
+			if(dim_type === 'square') r = c;
 			updateEntryInput();
 		}
 	};

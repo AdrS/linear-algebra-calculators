@@ -5,12 +5,10 @@ window.addEventListener('load', function() {
 
 	//keep dimensions synced
 	$('matrix1_d2').addEventListener('change', function() {
-			$('matrix2_d1').value = $('matrix1_d2').value;
-			mi2.update();
+			mi2.setRows(parseInt($('matrix1_d2').value));
 	});
 	$('matrix2_d1').addEventListener('change', function() {
-			$('matrix1_d2').value = $('matrix2_d1').value;
-			mi1.update();
+			mi1.setCols(parseInt($('matrix2_d1').value));
 	});
 	$('calculate').addEventListener('click', function() {
 		const m1 = mi1.get_matrix();

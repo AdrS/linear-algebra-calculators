@@ -110,7 +110,7 @@ matrix.rref = function(A, saveOriginal) {
 		}
 
 		//if no pivot, then nothing to do
-		if(Ac[imax][i].abs().toDecimal() === 0) continue;
+		if(max === 0) continue;
 
 		//make make upper row be one with the pivot
 		matrix.swapRows(Ac, num_pivots, imax);
