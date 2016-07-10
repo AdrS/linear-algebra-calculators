@@ -357,3 +357,42 @@ vector.normalize = function(v) {
 	if(mag === 0) return;
 	return vector.scale(1/mag, v);
 }
+
+//returns the length of the projection of u in the direction of v
+vector.proj_len = function(u,v) {
+	return vector.dot(u,v)/vector.mag(v);
+}
+
+//returns component of u in the direction of v
+vector.proj = function(u,v) {
+	return vector.scale(vector.dot(u,v)/vector.mag2(v),v);
+}
+
+//Given matrix A with linearly independent columns, returns the QR factorization
+matrix.QR_factorization = function(A) {
+	let Q = matrix.matrix(A.length, A[0].length);
+	let R = matrix.matrix(A[0].length, A[0].length);
+	let Us = [];
+	
+	//for each column
+	for(let i = 0; i < A[0].length; i += 1) {
+		let v = matrix.extractCol(A, i);
+
+		//subtract the components in the direction of previous columns
+		for(let j = 0; j < i; j += 1) {
+			R[j][i] = vector.proj_len(v, Us[j]);
+			v = vector.sub(v,vector.proj(v,Us[j]));
+		}
+		Us.push(v);
+		R[i][i] = vector.mag(v);
+
+		//if nothing remains of the vector, then is must have been linear
+		//combination or previous ones, so no QR factorization
+		if(Math.abs(R[i][i]) < 0.00001) return; //TODO: make epsilon adjustable
+
+		//then normalize
+		v = vector.scale(1/R[i][i],v);
+		for(let j = 0; j < A.length; j += 1) Q[j][i] = v[j];
+	}
+	return {'Q':Q, 'R':R};
+}

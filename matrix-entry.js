@@ -192,6 +192,7 @@ var matrix_input = function(divid, options, r, c) {
 		}
 	};
 }
+//TODO: add header/label option
 var matrix_display = function(matrix, divid) {
 	//set up matrix
 	const table = create('table');

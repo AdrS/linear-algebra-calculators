@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+	<title>QR Decomposition Calculator</title>
+	<meta name="author" content="Adrian Stoll">
+	<script src='matrix.js'> </script>
+	<script src='matrix-entry.js'> </script>
+	<script src='qr-decomposition.js'> </script>
+</head>
+<body>
+	<h1>QR Decomposition Calculator</h1>
+	<p>The columns of the matrix must be linearly independent in order to preform QR factorization. Note: this uses Gram Schmidt orthogonalization which is numerically unstable. Alternate algorithms include modified Gram Schmidt, Givens rotations, and Householder reflections. (TODO: implement these alternative methods)</p>
+	<div id='matrix'></div>
+	<div>
+		<input type='button' id='calculate' value='Calculate Decomposition' />
+	</div>
+	<div id='results'></div>
+<hr>
+Written by Adrian Stoll on 10 Jul 2016
+</body>
+</html>
