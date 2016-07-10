@@ -6,7 +6,9 @@
  *
  * Matrices are represented as multidimensional arrays JavaScript numbers
  */
-//TODO: write version for number.Real/Complex entries
+
+//TODO: read up on Ecmascript 6 modules
+
 var matrix = {};
 
 function $(id) { return document.getElementById(id); }
@@ -302,4 +304,56 @@ matrix.trace = function(A) {
 	let tr = 0;
 	for(let i = 0; i < A.length; i += 1) tr += A[i][i];
 	return tr;
+}
+
+//returns the cth column of A as a row vector
+matrix.extractCol = function(A, c) {
+	let col = [];
+	for(let i = 0; i < A.length; i += 1) {
+		col[i] = A[i][c];
+	}
+	return col;
+}
+
+var vector = {};
+vector.dot = function(u,v) {
+	let s = 0;
+	for(let i = 0; i < u.length; i += 1) s += u[i]*v[i];
+	return s;
+}
+
+vector.mag2 = function(v) {
+	return vector.dot(v,v);
+}
+
+vector.mag = function(v) {
+	return Math.sqrt(vector.dot(v,v));
+}
+
+vector.copy = function(v) {
+	return v.slice();
+}
+
+vector.add = function(u, v) {
+	let w = [];
+	for(let i = 0; i < u.length; i += 1) w[i] = u[i] + v[i];
+	return w;
+}
+
+vector.sub = function(u, v) {
+	let w = [];
+	for(let i = 0; i < u.length; i += 1) w[i] = u[i] - v[i];
+	return w;
+}
+
+vector.scale = function(c, v) {
+	let vc = [];
+	for(let i = 0; i < v.length; i += 1) vc[i] = c*v[i];
+	return vc;
+}
+
+vector.normalize = function(v) {
+	const mag = vector.mag(v);
+	if(mag === 0) return;
+	return vector.scale(1/mag, v);
 }
